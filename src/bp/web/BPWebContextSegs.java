@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.GZIPInputStream;
 
 import bp.BPCore;
 import bp.res.BPResourceWebSiteLink;
@@ -96,7 +98,7 @@ public class BPWebContextSegs
 					for (String[] headerfield : headerfields)
 					{
 						conn.setRequestProperty(headerfield[0], headerfield[1]);
-						Std.debug(headerfield[0]+"="+ headerfield[1]);
+						Std.debug(headerfield[0] + "=" + headerfield[1]);
 					}
 				}
 				conn.setDoInput(true);
@@ -116,7 +118,7 @@ public class BPWebContextSegs
 					ResponseContentHolder content = new ResponseContentHolder();
 					rc.content = content;
 					rc.headerfields = conn.getHeaderFields();
-					try (InputStream in = (c == 200 ? conn.getInputStream() : conn.getErrorStream()))
+					try (InputStream in = (c == 200 ? wrapEncoding(conn.getInputStream(), rc.headerfields) : conn.getErrorStream()))
 					{
 						int len = in.read(bs);
 						while (len >= 0)
@@ -132,6 +134,10 @@ public class BPWebContextSegs
 			{
 				rc.err = e;
 			}
+			catch (Exception e)
+			{
+				Std.err(e);
+			}
 			finally
 			{
 				disconnect(thread);
@@ -142,6 +148,35 @@ public class BPWebContextSegs
 
 	public static abstract class BPWebContextSegRun<V> extends WebSeg<V>
 	{
+		protected final static InputStream wrapEncoding(InputStream in, Map<String, List<String>> headerfields) throws IOException
+		{
+			List<String> encoding = getHeaderValues(headerfields, "Content-Encoding");
+			if (encoding != null && encoding.size() > 0)
+			{
+				String en = encoding.get(0);
+				if ("gzip".equals(en))
+				{
+					return new GZIPInputStream(in);
+				}
+				else if ("deflate".equals(en))
+				{
+					return new DeflaterInputStream(in);
+				}
+			}
+			return in;
+		}
+
+		protected final static List<String> getHeaderValues(Map<String, List<String>> headerfields, String key)
+		{
+			key = key.toUpperCase();
+			for (String k : headerfields.keySet())
+			{
+				if (k != null && k.toUpperCase().equals(key))
+					return headerfields.get(k);
+			}
+			return null;
+		}
+
 		protected final static Boolean connect(WebThread thread, BPWebOperation op)
 		{
 			BPResourceWebSiteLink link = thread.getWebSiteLink();
