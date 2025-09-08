@@ -183,10 +183,23 @@ public class BPWebContextSegs
 			Map<String, Object> linkmap = link.getMappedData();
 			String host = (String) linkmap.get("host");
 			Integer port = ObjUtil.toInt(linkmap.get("port"), null);
+			String basepath = (String) linkmap.get("basepath");
+			String auth = "";
+			{
+				String user = (String) linkmap.get("user");
+				String pass = (String) linkmap.get("password");
+				if (user != null && user.length() > 0)
+				{
+					auth = user;
+					if (pass != null && pass.length() > 0)
+						auth += ":" + pass;
+					auth += "@";
+				}
+			}
 			URL url = null;
 			try
 			{
-				url = new URL(link.getProtocol() + "://" + host + (port == null ? "" : (":" + port)) + op.getPath());
+				url = new URL(link.getProtocol() + "://" + auth + host + (port == null ? "" : (":" + port)) + (basepath == null ? "" : basepath) + op.getPath());
 			}
 			catch (MalformedURLException e)
 			{
