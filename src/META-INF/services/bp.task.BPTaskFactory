@@ -1,2 +1,3 @@
 bp.task.BPTaskWebSiteOperation$BPTaskFactoryWebSiteOperation
 bp.task.BPTaskSendPing$BPTaskFactorySendPing
+bp.task.BPTaskBrowser$BPTaskFactoryBrowser

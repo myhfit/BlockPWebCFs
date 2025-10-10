@@ -17,7 +17,10 @@ public class BPEnvBrowser extends BPEnvBase
 		m_kvs.put("Chromium", "");
 		m_kvs.put("Chrome", "");
 		m_kvs.put("Edge", "");
-		m_kvs.put("Filefox", "");
+		m_kvs.put("Firefox", "");
+		m_kvs.put("IE", "");
+		m_kvs.put("Konqueror", "");
+		m_kvs.put("Safari", "");
 	}
 
 	public List<String> listRawKeys()
@@ -42,6 +45,6 @@ public class BPEnvBrowser extends BPEnvBase
 
 	public boolean customKey()
 	{
-		return false;
+		return true;
 	}
 }

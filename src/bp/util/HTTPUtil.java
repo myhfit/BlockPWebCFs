@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import bp.web.BPWebResponse;
@@ -28,19 +29,20 @@ public class HTTPUtil
 
 	public final static BPWebResponse get(String url, Map<String, String> headermap)
 	{
-		return send("GET", url, null, transHeaderMapToArray(headermap));
+		return send("GET", url, null, transHeaderMapToArray(headermap), null);
 	}
 
 	public final static BPWebResponse post(String url, byte[] content, Map<String, String> headermap)
 	{
-		return send("POST", url, content, transHeaderMapToArray(headermap));
+		return send("POST", url, content, transHeaderMapToArray(headermap), null);
 	}
 
-	public final static BPWebResponse send(String verb, String urlstr, byte[] content, String[][] headerfields)
+	public final static BPWebResponse send(String verb, String urlstr, byte[] content, String[][] headerfields, BiConsumer<HttpURLConnection, byte[]> cb)
 	{
 		BPWebResponse rc = null;
 		HttpURLConnection conn = null;
 		rc = new BPWebResponse();
+		boolean needcb = cb != null;
 		try
 		{
 			URL url = new URL(urlstr);
@@ -67,6 +69,7 @@ public class HTTPUtil
 				rc.responsecode = c;
 				byte[] bs = new byte[65536];
 				ResponseContentHolder contentholder = new ResponseContentHolder();
+				contentholder.setup(conn.getContentType(), conn.getContentEncoding());
 				rc.content = contentholder;
 				rc.headerfields = conn.getHeaderFields();
 				try (InputStream in = (c == 200 ? conn.getInputStream() : conn.getErrorStream() == null ? conn.getInputStream() : conn.getErrorStream()))
@@ -75,9 +78,11 @@ public class HTTPUtil
 					while (len >= 0)
 					{
 						contentholder.write(bs, 0, len);
+						if (needcb)
+							cb.accept(conn, BSUtil.newBS(bs, c, len));
 						len = in.read(bs);
 					}
-					contentholder.finish(null, null, conn.getContentType(), conn.getContentEncoding());
+					contentholder.finish(null, null);
 				}
 			}
 		}

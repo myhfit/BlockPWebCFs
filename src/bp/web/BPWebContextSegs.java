@@ -116,6 +116,7 @@ public class BPWebContextSegs
 					rc.responsecode = c;
 					byte[] bs = new byte[65536];
 					ResponseContentHolder content = new ResponseContentHolder();
+					content.setup(conn.getContentType(), conn.getContentEncoding());
 					rc.content = content;
 					rc.headerfields = conn.getHeaderFields();
 					try (InputStream in = (c == 200 ? wrapEncoding(conn.getInputStream(), rc.headerfields) : conn.getErrorStream()))
@@ -126,7 +127,7 @@ public class BPWebContextSegs
 							content.write(bs, 0, len);
 							len = in.read(bs);
 						}
-						content.finish(context, op, conn.getContentType(), conn.getContentEncoding());
+						content.finish(context, op);
 					}
 				}
 			}

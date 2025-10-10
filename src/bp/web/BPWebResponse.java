@@ -77,6 +77,8 @@ public class BPWebResponse
 		protected volatile boolean m_direct = false;
 		protected volatile WeakReference<Consumer<byte[]>> m_out;
 		protected volatile boolean m_finished = false;
+		protected volatile String m_contenttype;
+		protected volatile String m_contentencoding;
 
 		public ResponseContentHolder()
 		{
@@ -87,7 +89,7 @@ public class BPWebResponse
 			return LockUtil.rwLock(m_lock, false, () -> m_finished);
 		}
 
-		public void finish(BPWebContext context, BPWebOperation op, String contenttype, String encoding)
+		public void finish(BPWebContext context, BPWebOperation op)
 		{
 			LockUtil.rwLock(m_lock, true, () ->
 			{
@@ -99,7 +101,7 @@ public class BPWebResponse
 						if (target.startsWith("$"))
 						{
 							String key = target.substring(1);
-							context.setVar(key, getContent(contenttype, encoding));
+							context.setVar(key, getContent(m_contenttype, m_contentencoding));
 						}
 					}
 				}
@@ -186,6 +188,12 @@ public class BPWebResponse
 				m_out = new WeakReference<>(out);
 				out.accept(m_bos.toByteArray());
 			});
+		}
+
+		public void setup(String contenttype, String contentencoding)
+		{
+			m_contenttype = contenttype;
+			m_contentencoding = contentencoding;
 		}
 	}
 }
