@@ -34,13 +34,20 @@ public class BPTaskBrowser extends BPTaskLocal<Boolean>
 		{
 			Object[] ps = (Object[]) sps;
 			Object[] newps = Arrays.copyOf(ps, ps.length);
-			newps[1] = dps;
+			newps[1] = mergeURL(ps.length > 1 ? (String) ps[1] : null, (String) dps);
 			return newps;
 		}
 		else
 		{
 			return super.mergeDynamicParams(sps, dps);
 		}
+	}
+
+	protected String mergeURL(String surl, String durl)
+	{
+		if (surl == null || surl.length() == 0)
+			return durl;
+		return surl.replace("${param}", durl);
 	}
 
 	protected void doStart()
@@ -51,9 +58,17 @@ public class BPTaskBrowser extends BPTaskLocal<Boolean>
 		Map<String, Object> options = ps.length > 2 ? JSONUtil.decode((String) ps[2]) : null;
 
 		setStarted();
-		BPBrowserHelperManager.open(browser, url, options);
-		m_future.complete(true);
-		setCompleted();
+		try
+		{
+			BPBrowserHelperManager.open(browser, url, options);
+			m_future.complete(true);
+			setCompleted();
+		}
+		catch (Exception e)
+		{
+			m_future.completeExceptionally(e);
+			setFailed(e);
+		}
 	}
 
 	public Map<String, Object> getMappedData()

@@ -20,11 +20,15 @@ public class BPBrowserHelperChromium extends BPBrowserHelperBase
 
 	protected String[] makeParams(String url, Map<String, Object> options)
 	{
-		boolean appmode = ObjUtil.toBool(options.get("appmode"), false);
-		String urlp = appmode ? "--app=" + url : url;
+		boolean appmode = false;
 		List<String> rc = new ArrayList<String>();
-		LogicUtil.IFVU(TextUtil.eds((String) options.get("size")), size -> rc.add("--window-size=" + size));
-		LogicUtil.IFVU(TextUtil.eds((String) options.get("pos")), pos -> rc.add("--window-position=" + pos));
+		if (options != null)
+		{
+			appmode = ObjUtil.toBool(options.get("appmode"), false);
+			LogicUtil.IFVU(TextUtil.eds((String) options.get("size")), size -> rc.add("--window-size=" + size));
+			LogicUtil.IFVU(TextUtil.eds((String) options.get("pos")), pos -> rc.add("--window-position=" + pos));
+		}
+		String urlp = appmode ? "--app=" + url : url;
 		rc.add(urlp);
 		return rc.toArray(new String[rc.size()]);
 	}
