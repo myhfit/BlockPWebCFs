@@ -37,10 +37,10 @@ public class BPResourceProjectWebSite extends BPResourceProjectFile
 
 	public BPProjectItemFactory[] getItemFactories()
 	{
-		return new BPProjectItemFactory[] { new BPProjectItemWebSiteLinkFactory() };
+		return new BPProjectItemFactory[] { new BPProjectItemFactoryWebSiteLink() };
 	}
 
-	public static class BPProjectItemWebSiteLinkFactory implements BPProjectItemFactory
+	public static class BPProjectItemFactoryWebSiteLink implements BPProjectItemFactory
 	{
 		public String getName()
 		{
