@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatWebSiteConsole implements BPFormat
+public class BPFormatWebSiteConsole extends BPFormatBase
 {
 	public final static String FORMAT_WEBSITECONSOLE = "WebSite Console";
 

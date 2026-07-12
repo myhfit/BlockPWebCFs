@@ -129,7 +129,7 @@ public class BPTaskBrowser extends BPTaskLocal<Boolean>
 			return new BPTaskBrowser();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskBrowser.class;
 		}

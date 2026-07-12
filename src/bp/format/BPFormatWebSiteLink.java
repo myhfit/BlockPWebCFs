@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatWebSiteLink implements BPFormat
+public class BPFormatWebSiteLink extends BPFormatBase
 {
 	public final static String FORMAT_WEBSITELINK = "WebSite Link";
 

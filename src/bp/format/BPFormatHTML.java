@@ -1,6 +1,6 @@
 package bp.format;
 
-public class BPFormatHTML implements BPFormat
+public class BPFormatHTML extends BPFormatBase
 {
 	public final static String FORMAT_HTML = "HTML";
 	public final static String MIME_TEXT_HTML = "text/html";

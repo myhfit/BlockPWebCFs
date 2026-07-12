@@ -122,7 +122,7 @@ public class BPTaskWebSiteOperation extends BPTaskLocal<Boolean>
 			return new BPTaskWebSiteOperation();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskWebSiteOperation.class;
 		}

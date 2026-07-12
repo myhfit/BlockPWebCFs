@@ -75,7 +75,7 @@ public class BPTaskSendPing extends BPTaskLocal<Long>
 			return new BPTaskSendPing();
 		}
 
-		public Class<? extends BPTask<?>> getTaskClass()
+		public Class<? extends BPTask<?>> getInstanceClass()
 		{
 			return BPTaskSendPing.class;
 		}
