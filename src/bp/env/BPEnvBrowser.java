@@ -3,7 +3,7 @@ package bp.env;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class BPEnvBrowser extends BPEnvBase
+public class BPEnvBrowser extends BPEnvCustom
 {
 	public final static String ENVKEY_BROWSER_DEFAULT = "DEFAULT";
 
@@ -23,28 +23,13 @@ public class BPEnvBrowser extends BPEnvBase
 		m_kvs.put("Safari", "");
 	}
 
-	public List<String> listRawKeys()
-	{
-		return m_rawkeys;
-	}
-
-	public boolean isRawKey(String key)
-	{
-		return m_rawkeys.contains(key);
-	}
-
 	public String getName()
 	{
 		return ENV_NAME_BROWSER;
 	}
 
-	public boolean hasKey(String key)
+	protected List<String> setupRawKeys()
 	{
-		return m_kvs.containsKey(key);
-	}
-
-	public boolean customKey()
-	{
-		return true;
+		return new CopyOnWriteArrayList<String>(new String[] { ENVKEY_BROWSER_DEFAULT });
 	}
 }

@@ -30,6 +30,7 @@ public class BPTaskSendPing extends BPTaskLocal<Long>
 		String host = (String) params.get("host");
 		boolean nanosec = ObjUtil.toBool(params.get("nanosec"), false);
 		setCommonStatus(COMMON_STATUS_RUNNING);
+		triggerStatusChanged();
 		InetAddress addr = null;
 		try
 		{
